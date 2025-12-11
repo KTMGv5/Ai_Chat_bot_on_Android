@@ -1,87 +1,54 @@
-Install Ollama in Termux (with Auto-Update Support)
+# Ollama Installation Script for Termux (Android)
 
-  
+This script automates the installation of **Ollama** and a lightweight Language Model (LLM) on Android devices via the Termux environment.
 
-This repository provides a script to install the patched Termux version of Ollama, download an efficient model for mobile CPUs, and ensure the script can self-update.
+This is ideal for running efficient large language models directly on mobile CPUs.
 
+## ✨ Features
 
----
+* **One-Step Setup:** Downloads and installs the patched version of Ollama available in the Termux package repository.
+* **Minimal Model Download:** Automatically pulls the specific, efficient model **`gemma3:270m`**, which is optimized for mobile CPU usage.
+* **Clean Operation:** The script manages the server startup, model download, and clean shutdown of the temporary background service.
 
-Features
+## 🚀 Installation
 
-Installs Ollama from the official Termux repository
+Follow these steps to quickly get Ollama running on your Android device using Termux.
 
-Downloads the Gemma 3:270m model (~292MB)
+### Prerequisites
 
-Starts the Ollama server temporarily during installation
+You must have the [Termux application](https://termux.dev/) installed on your Android device.
 
-Includes an automatic update checker
+### Execution
 
-Provides clear usage instructions
+1.  **Download the script:**
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/KTMGv5/LLM-On-Android-beta-/refs/heads/main/install_ollama.sh -o install_ollama.sh
+    ```
 
+2.  **Make it executable:**
+    ```bash
+    chmod +x install_ollama.sh
+    ```
 
+3.  **Run the installation:**
+    ```bash
+    ./install_ollama.sh
+    ```
 
----
+The script will update packages, install dependencies, and download the `gemma3:270m` model.
 
-Installation
+> **Note on Model:** The included model, `gemma3:270m`, is specific to this project's configuration. If you encounter errors, you may need to substitute it for a publicly available model like `gemma:2b` or `phi3:3.8b-mini-128k-instruct-q4_0`.
 
-Download and run the installer script:
+## 💡 Usage
 
-curl -fsSL https://raw.githubusercontent.com/KTMGv5/LLM-On-Android-beta-/refs/heads/main/install_ollama.sh -o install_ollama.sh
-chmod +x install_ollama.sh
-bash install_ollama.sh
+Running Ollama requires two steps, which you will typically perform in two separate Termux sessions:
 
-Replace USERNAME/REPO with your actual GitHub username and repository.
+### 1. Start the Ollama Server (Session 1)
 
-
----
-
-Auto-Update System
-
-The script includes an update check. Each time it runs, it compares its internal version with the GitHub version:
-
-If a new version is found, it automatically downloads the update
-
-Replaces the current file
-
-Restarts itself
-
-
-To enable this, make sure the script in your repository contains:
-
-UPDATE_URL="https://raw.githubusercontent.com/USERNAME/REPO/main/install_ollama.sh"
-
-
----
-
-Usage Instructions
-
-Starting the Ollama Server
-
-Open a Termux session and run:
-
+Ollama runs as a server process. Open your first Termux session and run the following command. You must keep this session running in the background.
+```bash
 ollama serve
-
-Keep this session running.
-
-Running a Model
-
-In a second Termux session, run:
-
+```
+Open a new Termux session (swipe from the left edge of the screen to open the session menu) and use the run command to start interacting with the model.
+```bash
 ollama run gemma3:270m
-
-
----
-
-Support
-
-For help or questions, contact:
-
-atophat on Discord
-
-
----
-
-License
-
-This project is licensed under the MIT License.
