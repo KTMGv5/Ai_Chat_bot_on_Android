@@ -1,54 +1,74 @@
-# Ollama Installation Script for Termux (Android)
+# Ollama on Android (Termux)
 
-This script automates the installation of **Ollama** and a lightweight Language Model (LLM) on Android devices via the Termux environment.
+![Platform](https://img.shields.io/badge/platform-Android-green)
+![Environment](https://img.shields.io/badge/environment-Termux-blue)
+![CPU](https://img.shields.io/badge/CPU-ARM64%20%7C%20ARMv7-lightgrey)
+![LLM](https://img.shields.io/badge/LLM-Ollama-purple)
+![Status](https://img.shields.io/badge/status-experimental-orange)
 
-This is ideal for running efficient large language models directly on mobile CPUs.
+Run **Ollama LLMs locally on Android** using **Termux**.
 
-## ✨ Features
+Minimal installer for mobile CPUs with optional automatic server startup.
 
-* **One-Step Setup:** Downloads and installs the patched version of Ollama available in the Termux package repository.
-* **Minimal Model Download:** Automatically pulls the specific, efficient model **`gemma3:270m`**, which is optimized for mobile CPU usage.
-* **Clean Operation:** The script manages the server startup, model download, and clean shutdown of the temporary background service.
+---
 
-## 🚀 Installation
+## 🚀 Quick Install
 
-Follow these steps to quickly get Ollama running on your Android device using Termux.
-
-### Prerequisites
-
-You must have the [Termux application](https://termux.dev/) installed on your Android device.
-
-### Execution
-
-1.  **Download the script:**
-    ```bash
     curl -fsSL https://raw.githubusercontent.com/KTMGv5/Ai_Chat_bot_on_Android/refs/heads/main/install_ollama.sh -o install_ollama.sh
-    ```
-
-2.  **Make it executable:**
-    ```bash
     chmod +x install_ollama.sh
-    ```
-
-3.  **Run the installation:**
-    ```bash
     ./install_ollama.sh
-    ```
 
-The script will update packages, install dependencies, and download the `gemma3:270m` model.
+---
 
-> **Note on Model:** The included model, `gemma3:270m`, is specific to this project's configuration. If you encounter errors, you may need to substitute it for a publicly available model like `gemma:2b` or `phi3:3.8b-mini-128k-instruct-q4_0`.
+## ⚙️ Optional Configuration
+
+Change behavior without editing the script:
+
+    SMALL_MODEL=llama3.2:1b ./install_ollama.sh
+
+    START_AT_END=0 ./install_ollama.sh
+
+    LOG_FILE=$HOME/ollama.log ./install_ollama.sh
+
+---
 
 ## 💡 Usage
 
-Running Ollama requires two steps, which you will typically perform in two separate Termux sessions:
+If the server is running:
 
-### 1. Start the Ollama Server (Session 1)
+    ollama run gemma3:270m
 
-Ollama runs as a server process. Open your first Termux session and run the following command. You must keep this session running in the background.
-```bash
-ollama serve
-```
-Open a new Termux session (swipe from the left edge of the screen to open the session menu) and use the run command to start interacting with the model.
-```bash
-ollama run gemma3:270m
+Manual mode (two sessions):
+
+Session 1:
+    ollama serve
+
+Session 2:
+    ollama run gemma3:270m
+
+---
+
+## 📱 Device Compatibility
+
+| Device / Class        | CPU Architecture | Android Version | Status        | Notes                              |
+|-----------------------|------------------|-----------------|---------------|------------------------------------|
+| Generic ARM64 Phones  | ARM64 (aarch64)  | Android 10+     | ✅ Works      | Recommended                         |
+| Older ARMv7 Devices  | ARMv7            | Android 8–9     | ⚠️ Limited    | Smaller models only                |
+| Low-RAM Devices      | ARM64 / ARMv7    | Android 9+      | ⚠️ Limited    | Expect slow inference              |
+| x86 / x86_64         | x86              | Any             | ❌ Unsupported| Termux + Ollama not supported      |
+
+---
+
+## 📝 Notes
+
+- Mobile devices are limited by RAM, thermals, and battery
+- Smaller models are strongly recommended
+- Close background apps for best performance
+
+---
+
+## 📜 License
+
+Provided as-is for research and experimentation.
+
+Ollama and downloaded models are subject to their respective licenses.
