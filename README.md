@@ -14,7 +14,7 @@ Minimal installer for mobile CPUs with optional automatic server startup.
 
 ## 🚀 Quick Install
 
-    curl -fsSL https://raw.githubusercontent.com/KTMGv5/Ai_Chat_bot_on_Android/refs/heads/main/install_ollama.sh -o install_ollama.sh
+    curl -fsSL https://raw.githubusercontent.com/KTMGv5/AndroidLLM/refs/heads/main/install_ollama.sh -o install_ollama.sh
     chmod +x install_ollama.sh
     ./install_ollama.sh
 
