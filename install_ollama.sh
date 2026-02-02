@@ -5,8 +5,12 @@ set -Eeuo pipefail
 # Termux Ollama Setup Script
 # =========================
 
+# ---- defaults / config ----
 SMALL_MODEL="${SMALL_MODEL:-gemma3:270m}"
-OLLAMA_HOST="${OLLAMA_HOST:-127.0.0.1:11434}"
+
+# Ollama clients typically expect scheme included
+OLLAMA_HOST="${OLLAMA_HOST:-http://127.0.0.1:11434}"
+
 START_AT_END="${START_AT_END:-1}"   # 1 = keep server running at end, 0 = stop it
 LOG_FILE="${LOG_FILE:-$HOME/ollama-serve.log}"
 
@@ -23,9 +27,9 @@ is_termux() {
   [[ -n "${PREFIX:-}" && "${PREFIX}" == */com.termux/* ]]
 }
 
+# Real health check: ping the daemon HTTP API
 server_running() {
-  # Quick check: ask ollama for its version; works only if daemon is up
-  ollama --version >/dev/null 2>&1
+  curl -fsS "${OLLAMA_HOST}/api/version" >/dev/null 2>&1
 }
 
 start_server_bg() {
@@ -33,12 +37,13 @@ start_server_bg() {
   export OLLAMA_HOST
 
   # Start in background, log output for debugging
+  # (nohup is okay, but plain background is often simpler in Termux)
   nohup ollama serve >"$LOG_FILE" 2>&1 &
   OLLAMA_PID=$!
 
-  # Wait for server to be responsive (up to ~20s)
-  for i in {1..20}; do
-    if ollama --version >/dev/null 2>&1; then
+  # Wait for server to be responsive (up to ~30s)
+  for i in {1..30}; do
+    if server_running; then
       log "Ollama server is up. (pid=${OLLAMA_PID})"
       return 0
     fi
@@ -87,11 +92,14 @@ if ! pkg install -y ollama; then
 fi
 
 need_cmd ollama
+need_cmd curl
 log "Ollama installed."
 
 # ---------- 2) Ensure server is running (for pulling) ----------
+export OLLAMA_HOST
+
 if server_running; then
-  log "Ollama appears to be already running; won't start a duplicate server."
+  log "Ollama server already running; won't start a duplicate server."
   OLLAMA_PID=""
 else
   start_server_bg
@@ -107,7 +115,7 @@ fi
 
 log "Model '${SMALL_MODEL}' downloaded successfully."
 
-# ---------- 4) Finish: keep server running + quick test ----------
+# ---------- 4) Finish ----------
 echo
 log "Setup complete."
 echo "----------------------------------------"
@@ -121,7 +129,6 @@ if [[ "${START_AT_END}" == "1" ]]; then
   if server_running; then
     log "Leaving Ollama server running."
   else
-    # If it wasn't running and we didn't start it for some reason, start it now
     start_server_bg
     log "Leaving Ollama server running."
   fi
